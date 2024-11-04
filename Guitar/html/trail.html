@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple E-commerce</title>
+  <style>
+    .product { margin: 20px; }
+    .cart { margin-top: 20px; }
+    .cart-item { margin: 10px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Product Listings -->
+  <div id="product-list">
+    <div class="product">
+      <h3>Product 1</h3>
+      <p>Price: ₹<span class="price">500</span></p>
+      <button class="add-to-cart" data-product="Product 1" data-price="500">Add to Cart</button>
+    </div>
+    <div class="product">
+      <h3>Product 2</h3>
+      <p>Price: ₹<span class="price">700</span></p>
+      <button class="add-to-cart" data-product="Product 2" data-price="700">Add to Cart</button>
+    </div>
+    <div class="product">
+      <h3>Product 3</h3>
+      <p>Price: ₹<span class="price">1200</span></p>
+      <button class="add-to-cart" data-product="Product 3" data-price="1200">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Cart Summary Section -->
+  <div class="cart">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <p>Total: ₹<span id="cart-total">0</span></p>
+    <button id="checkout-btn" style="display: none;">Proceed to Checkout</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+<script>
+    // Initialize an empty cart
+let cart = [];
+
+// Add to Cart button functionality
+document.querySelectorAll(".add-to-cart").forEach(button => {
+  button.addEventListener("click", function() {
+    const productName = this.getAttribute("data-product");
+    const productPrice = parseFloat(this.getAttribute("data-price"));
+
+    // Check if the product is already in the cart
+    const existingProduct = cart.find(item => item.name === productName);
+
+    if (existingProduct) {
+      // Increase quantity if already in cart
+      existingProduct.quantity += 1;
+    } else {
+      // Add new product to cart
+      cart.push({ name: productName, price: productPrice, quantity: 1 });
+    }
+
+    // Update cart display
+    updateCart();
+  });
+});
+
+
+
+// Function to update the cart display
+function updateCart() {
+  const cartItemsContainer = document.getElementById("cart-items");
+  const cartTotalElement = document.getElementById("cart-total");
+  const checkoutBtn = document.getElementById("checkout-btn");
+
+  // Clear current cart display
+  cartItemsContainer.innerHTML = "";
+
+  // If the cart is empty, hide the checkout button
+  if (cart.length === 0) {
+    checkoutBtn.style.display = "none";
+  } else {
+    checkoutBtn.style.display = "block";
+  }
+
+  // Display each item in the cart
+  let totalPrice = 0;
+  cart.forEach(item => {
+    const itemTotalPrice = item.price * item.quantity;
+    totalPrice += itemTotalPrice;
+
+    const cartItem = document.createElement("div");
+    cartItem.className = "cart-item";
+    cartItem.innerHTML = `${item.name} - ₹${item.price} x ${item.quantity} = ₹${itemTotalPrice}`;
+    cartItemsContainer.appendChild(cartItem);
+  });
+
+  // Update total price
+  cartTotalElement.textContent = totalPrice;
+}
+
+
+// Checkout button functionality
+document.getElementById("checkout-btn").addEventListener("click", function() {
+  alert("Proceeding to checkout with total amount: ₹" + document.getElementById("cart-total").textContent);
+  // Redirect to actual checkout page (replace URL with real checkout page)
+  window.location.href = "/checkout";  // Simulated checkout page
+});
+
+</script>
